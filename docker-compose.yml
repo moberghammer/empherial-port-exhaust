@@ -1,0 +1,18 @@
+---
+version: '3.7'
+
+services:
+
+  wrk:
+    image: skandyla/wrk
+    command: -t50 -c100 -d300  http://forward/
+
+  forward:
+    image: epe-demo
+    build:
+      context: ./
+    command: forward http://sleep/
+
+  sleep:
+    image: epe-demo
+    command: sleep 3s
