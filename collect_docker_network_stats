@@ -4,5 +4,5 @@ for ID in $(docker ps -q)
 do
 	PID=$(docker inspect -f '{{.State.Pid}}' $ID)
 	NAME=$(docker inspect -f '{{.Name}}' $ID)
-	nsenter -t $PID -n netstat -na
+	nsenter -t $PID -n netstat -nat
 done
