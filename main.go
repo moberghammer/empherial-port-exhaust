@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"time"
@@ -15,7 +16,7 @@ func main() {
 	}
 	switch os.Args[1] {
 	case "forward":
-		CreateForwardServer(os.Args[2])
+		CreateForwardServer(os.Args[2:])
 	case "sleep":
 		duration, err := time.ParseDuration(os.Args[2])
 		if err != nil {
@@ -45,11 +46,12 @@ func CreateSleepServer(sleepTime time.Duration) {
 	log.Fatal(http.ListenAndServe(":80", nil))
 }
 
-func CreateForwardServer(url string) {
+func CreateForwardServer(url []string) {
 	fmt.Println(time.Now(), "Creating forward server with target url: ", url)
 	handlerForward := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(time.Now(), " Requesting ", url)
-		resp, err := http.Get(url)
+		targetUrl := url[rand.Int()%len(url)]
+		fmt.Println(time.Now(), " Requesting ", targetUrl)
+		resp, err := http.Get(targetUrl)
 		if err != nil {
 			fmt.Println(time.Now(), " Request failed ", err)
 		} else {
@@ -59,6 +61,10 @@ func CreateForwardServer(url string) {
 				fmt.Println(time.Now(), " Failed to read body ", err)
 			} else {
 				fmt.Println(time.Now(), " Request done ", body)
+			}
+			err = resp.Body.Close()
+			if err != nil {
+				fmt.Println(time.Now(), " Failed to close body")
 			}
 		}
 	}

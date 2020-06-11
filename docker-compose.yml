@@ -5,14 +5,48 @@ services:
 
   wrk:
     image: skandyla/wrk
-    command: -t50 -c100 -d300  http://forward/
+    command: -t50 -c1000 -d300  http://forward/
 
   forward:
     image: epe-demo
     build:
       context: ./
-    command: forward http://sleep/
+    command: forward http://sleep1/ http://sleep2/
+    deploy:
+      replicas: 1
 
-  sleep:
+  sleep1:
     image: epe-demo
-    command: sleep 3s
+    command: sleep 10ms
+    deploy:
+      replicas: 1
+
+  sleep2:
+    image: epe-demo
+    command: sleep 10ms
+    deploy:
+      replicas: 1
+
+#  sleep3:
+#    image: epe-demo
+#    command: sleep 10ms
+#    deploy:
+#      replicas: 5
+#
+#  sleep4:
+#    image: epe-demo
+#    command: sleep 10ms
+#    deploy:
+#      replicas: 5
+#
+#  sleep5:
+#    image: epe-demo
+#    command: sleep 10ms
+#    deploy:
+#      replicas: 5
+#
+#  sleep6:
+#    image: epe-demo
+#    command: sleep 10ms
+#    deploy:
+#      replicas: 5
