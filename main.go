@@ -50,17 +50,19 @@ func CreateForwardServer(url []string) {
 	fmt.Println(time.Now(), "Creating forward server with target url: ", url)
 	handlerForward := func(w http.ResponseWriter, r *http.Request) {
 		targetUrl := url[rand.Int()%len(url)]
-		fmt.Println(time.Now(), " Requesting ", targetUrl)
+		start := time.Now()
+		fmt.Println(start, " Requesting ", targetUrl)
 		resp, err := http.Get(targetUrl)
+		responceTime := time.Now().Sub(start)
 		if err != nil {
-			fmt.Println(time.Now(), " Request failed ", err)
+			fmt.Println(responceTime, " Request failed ", err)
 		} else {
 			defer resp.Body.Close()
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				fmt.Println(time.Now(), " Failed to read body ", err)
+				fmt.Println(responceTime, " Failed to read body ", err)
 			} else {
-				fmt.Println(time.Now(), " Request done ", body)
+				fmt.Println(responceTime, " Request done ", body)
 			}
 			err = resp.Body.Close()
 			if err != nil {
